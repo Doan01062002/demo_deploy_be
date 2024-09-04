@@ -1,18 +1,24 @@
 const jsonServer = require("json-server");
-
-// tạo máy chủ
 const server = jsonServer.create();
-
 const router = jsonServer.router("db.json");
+const middlewares = jsonServer.defaults();
 
-const midleware = jsonServer.defaults();
+server.use(middlewares);
 
-server.use(midleware);
+server.use(
+  jsonServer.rewriter({
+    "/api/*": "/$1",
+    "/users/:resource/:id/show": "/:resource/:id",
+    "/products/:resource/:id/show": "/:resource/:id",
+    "/carts/:resource/:id/show": "/:resource/:id",
+    "/orders/:resource/:id/show": "/:resource/:id",
+  })
+);
 server.use(router);
 
-// lắng nghe cổn của ứng dụng
 server.listen(3000, () => {
-  console.log("thành công");
+  console.log("JSON Server is running");
 });
 
+// Export the Server API
 module.exports = server;
